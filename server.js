@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const port = process.env.PORT || 3000
+const { ObjectId } = require('mongodb');
+
 
 app.use(express.json());
 app.use(cors())
@@ -34,6 +36,14 @@ async function run() {
         const projects = await projectCollection.find().toArray()
         res.send(projects)
     })
+
+    app.get('/projects/:id', async(req, res) => {
+        const id = req.params.id;
+        const query = {_id : new ObjectId(id)}
+        const seledtedProject = await projectCollection.findOne(query)
+        res.send(seledtedProject)
+    })
+
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
